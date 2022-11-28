@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "357625708902",
+    "project_id": "crossdevice-codelab",
+    "storage_bucket": "crossdevice-codelab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357625708902:android:33aa96398c3abce818c8a7",
+        "android_client_info": {
+          "package_name": "com.example.cross_device_remote_controller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "357625708902-gh71fp65juhm5grgnbdlc1rvubpg4o9j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_tQAmpd2TRiNvEfrP3BCaDlmHUuVnEnU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "357625708902-gh71fp65juhm5grgnbdlc1rvubpg4o9j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
