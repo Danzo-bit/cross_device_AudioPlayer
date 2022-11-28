@@ -20,6 +20,9 @@ import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'application_state.dart';
 
 class PlayerWidget extends StatefulWidget {
   final String url;
@@ -67,6 +70,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   void initState() {
     super.initState();
     _initAudioPlayer();
+     Provider.of<ApplicationState>(context, listen: false)
+        .onLeadDeviceChangeCallback = updatePlayer;
   }
 
   @override
@@ -79,6 +84,38 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     _playerStateSubscription?.cancel();
 
     super.dispose();
+  }
+
+  void updatePlayer(Map<dynamic, dynamic> snapshot) {
+    _updatePlayer(snapshot['state'], snapshot['slider_position']);
+  }
+
+  void _updatePlayer(dynamic state, dynamic sliderPosition) {
+    if (state is int && sliderPosition is double) {
+      try {
+        _updateSlider(sliderPosition);
+        final PlayerState newState = PlayerState.values[state];
+        if (newState != _playerState) {
+          switch (newState) {
+            case PlayerState.PLAYING:
+              _play();
+              break;
+            case PlayerState.PAUSED:
+              _pause();
+              break;
+            case PlayerState.STOPPED:
+            case PlayerState.COMPLETED:
+              _stop();
+              break;
+          }
+          _playerState = newState;
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('sync player failed');
+        }
+      }
+    }
   }
 
   @override
@@ -155,6 +192,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       // Avoid a bug in web player where extra tap gesture is bound.
       return;
     }
+     Provider.of<ApplicationState>(context, listen: false)
+        .setLeadDeviceState(_playerState.index, _sliderPosition);
     _updateSlider(v);
   }
 
@@ -278,6 +317,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   Future<int> _play() async {
     var result = 0;
+   
+    Provider.of<ApplicationState>(context, listen: false)
+        .setLeadDeviceState(PlayerState.PLAYING.index, _sliderPosition);
 
     if (_playerState == PlayerState.PAUSED) {
       result = await _audioPlayer.resume();
@@ -332,6 +374,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         _setSliderWithPlaybackPosition();
       });
     }
+      Provider.of<ApplicationState>(context, listen: false)
+        .setLeadDeviceState(_playerState.index, _sliderPosition);
     return result;
   }
 
